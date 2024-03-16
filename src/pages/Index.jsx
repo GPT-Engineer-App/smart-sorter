@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Box, Button, Container, FormControl, FormLabel, Input, Stack, Text, useToast } from "@chakra-ui/react";
-import { FaSignInAlt, FaUserPlus, FaHeartbeat } from "react-icons/fa";
+import { FaSignInAlt, FaUserPlus, FaHeartbeat, FaCat } from "react-icons/fa";
 
 const Index = () => {
   const [email, setEmail] = useState("");
@@ -109,6 +109,44 @@ const Index = () => {
     }
   };
 
+  const handleGenerateFunnyCat = async () => {
+    try {
+      const response = await fetch("https://backengine-siby.fly.dev/funny-cat", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.ok) {
+        const blob = await response.blob();
+        const url = URL.createObjectURL(blob);
+        toast({
+          title: "Funny Cat Generated",
+          description: <img src={url} alt="Funny Cat" style={{ maxWidth: "100%" }} />,
+          status: "info",
+          duration: 5000,
+          isClosable: true,
+        });
+      } else {
+        toast({
+          title: "Failed to generate funny cat.",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Network error.",
+        description: "Couldn't connect to the server.",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    }
+  };
+
   return (
     <Container py={8}>
       <Stack spacing={4}>
@@ -132,6 +170,12 @@ const Index = () => {
           <Text mb={2}>Check Server Health</Text>
           <Button leftIcon={<FaHeartbeat />} colorScheme="red" onClick={handleHealthCheck}>
             Health Check
+          </Button>
+        </Box>
+        <Box textAlign="center">
+          <Text mb={2}>Generate Funny Cat Picture</Text>
+          <Button leftIcon={<FaCat />} colorScheme="orange" onClick={handleGenerateFunnyCat}>
+            Generate Funny Cat
           </Button>
         </Box>
       </Stack>
